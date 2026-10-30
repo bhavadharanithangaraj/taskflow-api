@@ -1,0 +1,27 @@
+# Render Blueprint for the API (Dashboard → New → Blueprint → pick this repo).
+# The database is on Neon and the frontend is on Vercel, so only the API lives here.
+services:
+  - type: web
+    name: taskflow-api
+    runtime: node
+    plan: free
+    region: singapore
+    buildCommand: npm ci --omit=dev
+    # Creates the tables if they are missing (safe to repeat), then starts the server.
+    startCommand: npm run db:migrate && npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_VERSION
+        value: "24"
+      - key: NODE_ENV
+        value: production
+      - key: DB_SSL
+        value: "true"
+      - key: JWT_SECRET
+        generateValue: true # Render creates a long random secret for you
+      - key: JWT_EXPIRES_IN
+        value: 1d
+      - key: DATABASE_URL
+        sync: false # you paste the Neon connection string in the dashboard
+      - key: CORS_ORIGIN
+        sync: false # you paste the Vercel URL in the dashboard

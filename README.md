@@ -202,4 +202,5 @@ GitHub Actions runs the same suite against a Postgres service on every push.
 | `DB_SSL` | `false` | `true` for cloud databases |
 | `JWT_SECRET` | dev-only value | Token signing secret (**required** when `NODE_ENV=production`) |
 | `JWT_EXPIRES_IN` | `1d` | Token lifetime |
+| `CORS_ORIGIN` | `*` | Websites allowed to call the API (comma-separated); set to the frontend URL in production |
 | `TEST_DATABASE_URL` | `.../taskflow_test` | Database used by `npm test` |

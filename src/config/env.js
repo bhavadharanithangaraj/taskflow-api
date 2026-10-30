@@ -22,6 +22,9 @@ const config = {
   dbSsl: process.env.DB_SSL === 'true',
   jwtSecret,
   jwtExpiresIn: process.env.JWT_EXPIRES_IN || '1d',
+  // Which websites may call the API from a browser. "*" = any (fine locally);
+  // in production set it to the frontend URL, comma-separated for several.
+  corsOrigin: process.env.CORS_ORIGIN || '*',
 };
 
 module.exports = config;

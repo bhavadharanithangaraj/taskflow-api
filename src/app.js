@@ -3,12 +3,17 @@
 // in tests and send requests to it without opening a real port.
 const express = require('express');
 const cors = require('cors');
+const config = require('./config/env');
 const routes = require('./routes');
 const { notFound, errorHandler } = require('./middleware/errorHandler');
 
 const app = express();
 
-app.use(cors());
+app.use(
+  cors({
+    origin: config.corsOrigin === '*' ? '*' : config.corsOrigin.split(',').map((o) => o.trim()),
+  }),
+);
 app.use(express.json());
 
 app.use('/api', routes);
