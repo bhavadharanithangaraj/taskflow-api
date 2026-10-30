@@ -1,5 +1,7 @@
-# Local PostgreSQL for development. Start it with:  docker compose up -d db
-# Host port 5434 is used so it never clashes with another Postgres on 5432.
+# Runs the whole stack:  docker compose up --build
+#   api -> http://localhost:3000   (Node.js / Express)
+#   db  -> localhost:5434          (PostgreSQL; 5434 so it never clashes with another Postgres on 5432)
+# For local development without the api container:  docker compose up -d db  &&  npm run dev
 services:
   db:
     image: postgres:16-alpine
@@ -19,6 +21,23 @@ services:
       interval: 5s
       timeout: 3s
       retries: 10
+
+  api:
+    build: .
+    container_name: taskflow-api
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      # Inside Docker the database is reached by its service name "db" on port 5432.
+      DATABASE_URL: postgres://taskflow:taskflow@db:5432/taskflow
+      JWT_SECRET: ${JWT_SECRET:-local-docker-secret-change-me}
+      JWT_EXPIRES_IN: 1d
+    ports:
+      # Change the host side if 3000 is busy, e.g.  API_PORT=3002 docker compose up
+      - "${API_PORT:-3000}:3000"
+    depends_on:
+      db:
+        condition: service_healthy
 
 volumes:
   taskflow-data:
