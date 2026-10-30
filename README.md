@@ -2,8 +2,20 @@
 
 A REST API for personal task management, built with **Node.js, Express, PostgreSQL and JWT**.
 Users register, log in, and manage their own tasks: create, list (with a status filter and pagination), update and delete.
+A small **React + Vite** frontend in [`frontend/`](frontend) lets you try every endpoint from the browser.
 
 ![CI](https://github.com/bhavadharanithangaraj/taskflow-api/actions/workflows/ci.yml/badge.svg)
+
+![TaskFlow task board](docs/screenshots/board.png)
+
+<details>
+<summary>More screenshots: login, dark mode, mobile</summary>
+
+| Login | Dark mode | Mobile |
+|---|---|---|
+| ![Login](docs/screenshots/login.png) | ![Dark mode](docs/screenshots/board-dark.png) | ![Mobile](docs/screenshots/mobile.png) |
+
+</details>
 
 ## Tech stack
 
@@ -14,6 +26,7 @@ Users register, log in, and manage their own tasks: create, list (with a status 
 | Auth | bcrypt password hashing (`bcryptjs`), JWT (`jsonwebtoken`) |
 | Validation | zod |
 | Testing | Jest + Supertest (14 API tests against a real Postgres) |
+| Frontend | React 19, Vite, plain CSS (light/dark, mobile-friendly), served by nginx in Docker |
 | DevOps | Docker, Docker Compose, GitHub Actions CI |
 
 ## Project structure
@@ -42,6 +55,7 @@ src/
 └── utils/AppError.js      # error with HTTP status + code
 db/schema.sql              # users and tasks tables
 tests/                     # Jest + Supertest API tests
+frontend/                  # React + Vite UI (see "Frontend" below)
 ```
 
 ## API endpoints
@@ -123,8 +137,13 @@ Every error has the same shape:
 docker compose up --build
 ```
 
-The API runs at http://localhost:3000/api/health and Postgres at `localhost:5434`.
-If port 3000 is busy, use `API_PORT=3002 docker compose up --build`.
+| Service | URL |
+|---|---|
+| Frontend | http://localhost:5173 |
+| API | http://localhost:3000/api/health |
+| PostgreSQL | `localhost:5434` (user/password/db: `taskflow`) |
+
+If a port is busy, change it: `API_PORT=3002 WEB_PORT=5174 docker compose up --build`.
 
 ### Option 2: Node locally, database in Docker
 
@@ -136,6 +155,32 @@ npm run dev                   # http://localhost:3000, restarts on file changes
 ```
 
 For any other database (for example Neon), set `DATABASE_URL` and `DB_SSL=true` in `.env`, then run `npm run db:migrate` to create the tables.
+
+## Frontend
+
+A single-page React app that uses only the public API: no extra backend code.
+
+- **Login / register** with tabs. The JWT is stored in `localStorage`, and on refresh it's checked with `GET /auth/me`.
+- **Task board**: add tasks, filter by status, 5 per page with Previous / Next, change status straight from the card, edit, and delete (with a confirmation).
+- Shows the API's validation messages under the matching input, highlights overdue tasks, and logs out automatically when the token expires (401).
+
+| File | Role |
+|---|---|
+| `src/api.js` | The only place that calls the API: adds the `Authorization` header and turns error responses into `ApiError` |
+| `src/App.jsx` | Shows the login screen or the board, and keeps the user logged in across refreshes |
+| `src/components/AuthForm.jsx` | Login / register form |
+| `src/components/TaskBoard.jsx` | Filter, pagination, and reloading after every change |
+| `src/components/TaskForm.jsx` | Create / edit form |
+| `src/components/TaskItem.jsx` | One task card with the status dropdown, Edit and Delete |
+
+Run it on its own (with the API on port 3000):
+
+```bash
+cd frontend
+cp .env.example .env          # VITE_API_URL=http://localhost:3000/api
+npm install
+npm run dev                   # http://localhost:5173
+```
 
 ## Tests
 

@@ -1,0 +1,154 @@
+/* Plain CSS for the whole app. Colors live in variables at the top, with a
+   dark-mode set that the browser picks automatically. */
+:root {
+  --bg: #f4f6fb;
+  --surface: #ffffff;
+  --text: #1c2233;
+  --muted: #667085;
+  --border: #e2e6ef;
+  --primary: #4f46e5;
+  --primary-text: #ffffff;
+  --danger: #d92d20;
+  --todo: #667085;
+  --todo-bg: #eef0f4;
+  --progress: #b54708;
+  --progress-bg: #fef0c7;
+  --done: #067647;
+  --done-bg: #dcfae6;
+  --shadow: 0 1px 2px rgb(16 24 40 / 6%), 0 1px 3px rgb(16 24 40 / 10%);
+  color-scheme: light dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0f1320;
+    --surface: #181d2e;
+    --text: #e6e9f2;
+    --muted: #98a2b3;
+    --border: #2a3147;
+    --primary: #7c74ff;
+    --danger: #f97066;
+    --todo: #c0c6d4;
+    --todo-bg: #2a3147;
+    --progress: #fdb022;
+    --progress-bg: #3d2a0a;
+    --done: #47cd89;
+    --done-bg: #0b3323;
+    --shadow: none;
+  }
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 15px/1.5 system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+
+h1, h2, h3 { margin: 0; line-height: 1.25; }
+h2 { font-size: 1.1rem; margin-bottom: 12px; }
+
+.app { max-width: 760px; margin: 0 auto; padding: 0 16px 32px; }
+.muted { color: var(--muted); }
+.center { text-align: center; padding: 24px; }
+
+.topbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 20px 0; }
+.brand { display: flex; align-items: center; gap: 10px; font-size: 1.4rem; }
+.logo {
+  display: grid; place-items: center; width: 32px; height: 32px; border-radius: 9px;
+  background: var(--primary); color: var(--primary-text); font-size: 1rem;
+}
+.user { display: flex; align-items: center; gap: 10px; }
+
+.card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+  padding: 18px; box-shadow: var(--shadow);
+}
+
+/* Forms */
+label { display: flex; flex-direction: column; gap: 4px; font-size: 0.85rem; font-weight: 600; }
+input, textarea, select {
+  font: inherit; font-weight: 400; color: var(--text); background: var(--surface);
+  border: 1px solid var(--border); border-radius: 8px; padding: 9px 11px; width: 100%;
+}
+input:focus, textarea:focus, select:focus { outline: 2px solid var(--primary); outline-offset: -1px; }
+textarea { resize: vertical; }
+.error { color: var(--danger); font-weight: 500; }
+.alert {
+  margin: 0 0 12px; padding: 10px 12px; border-radius: 8px; font-size: 0.9rem;
+  color: var(--danger); background: color-mix(in srgb, var(--danger) 10%, transparent);
+}
+
+/* Buttons */
+.btn {
+  font: inherit; font-weight: 600; border-radius: 8px; padding: 9px 16px; cursor: pointer;
+  border: 1px solid transparent;
+}
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn.primary { background: var(--primary); color: var(--primary-text); }
+.btn.ghost { background: transparent; color: var(--text); border-color: var(--border); }
+.btn.danger { background: transparent; color: var(--danger); border-color: var(--border); }
+.btn.small { padding: 5px 11px; font-size: 0.85rem; }
+.btn.full { width: 100%; margin-top: 4px; }
+
+/* Auth */
+.auth { max-width: 400px; margin: 24px auto; }
+.auth form { display: flex; flex-direction: column; gap: 14px; }
+.tabs { display: flex; gap: 4px; margin-bottom: 18px; padding: 4px; background: var(--bg); border-radius: 10px; }
+.tabs button {
+  flex: 1; font: inherit; font-weight: 600; padding: 8px; border: 0; border-radius: 7px;
+  background: transparent; color: var(--muted); cursor: pointer;
+}
+.tabs button.active { background: var(--surface); color: var(--text); box-shadow: var(--shadow); }
+
+/* Board */
+.board { display: flex; flex-direction: column; gap: 24px; }
+.task-form { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.task-form .alert { grid-column: span 2; }
+.span-2 { grid-column: span 2; }
+.actions { display: flex; justify-content: flex-end; gap: 8px; }
+
+.board-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px; }
+.count { font-weight: 400; }
+.filters { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+.chip {
+  font: inherit; font-size: 0.85rem; padding: 5px 12px; border-radius: 999px; cursor: pointer;
+  border: 1px solid var(--border); background: var(--surface); color: var(--text);
+}
+.chip.active { background: var(--primary); border-color: var(--primary); color: var(--primary-text); }
+
+.tasks { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.tasks.faded { opacity: 0.6; }
+.task { display: flex; justify-content: space-between; gap: 16px; border-left: 4px solid var(--todo); }
+.task.status-in_progress { border-left-color: var(--progress); }
+.task.status-done { border-left-color: var(--done); }
+.task.editing { display: block; border-left-color: var(--primary); }
+.task-main { min-width: 0; }
+.task-main h3 { font-size: 1rem; overflow-wrap: anywhere; }
+.task-main h3.done { text-decoration: line-through; color: var(--muted); }
+.task-main p { margin: 4px 0 0; overflow-wrap: anywhere; }
+.due { font-size: 0.85rem; color: var(--muted); }
+.due.overdue { color: var(--danger); font-weight: 600; }
+.task-side { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; flex-shrink: 0; }
+.row { display: flex; gap: 6px; }
+
+.pill {
+  width: auto; padding: 4px 10px; border-radius: 999px; font-size: 0.8rem; font-weight: 600; border: 0;
+  cursor: pointer;
+}
+.pill.status-todo { color: var(--todo); background: var(--todo-bg); }
+.pill.status-in_progress { color: var(--progress); background: var(--progress-bg); }
+.pill.status-done { color: var(--done); background: var(--done-bg); }
+
+.empty { text-align: center; }
+.pager { display: flex; align-items: center; justify-content: center; gap: 14px; margin-top: 16px; }
+.footer { text-align: center; font-size: 0.8rem; margin-top: 40px; }
+
+@media (max-width: 560px) {
+  .task-form { grid-template-columns: 1fr; }
+  .span-2, .task-form .alert { grid-column: auto; }
+  .task { flex-direction: column; }
+  .task-side { flex-direction: row; align-items: center; justify-content: space-between; }
+}

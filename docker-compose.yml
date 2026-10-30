@@ -1,4 +1,5 @@
 # Runs the whole stack:  docker compose up --build
+#   web -> http://localhost:5173   (React frontend served by nginx)
 #   api -> http://localhost:3000   (Node.js / Express)
 #   db  -> localhost:5434          (PostgreSQL; 5434 so it never clashes with another Postgres on 5432)
 # For local development without the api container:  docker compose up -d db  &&  npm run dev
@@ -38,6 +39,18 @@ services:
     depends_on:
       db:
         condition: service_healthy
+
+  web:
+    build:
+      context: ./frontend
+      args:
+        # The browser calls the API, so this is the API's address as seen from your machine.
+        VITE_API_URL: http://localhost:${API_PORT:-3000}/api
+    container_name: taskflow-web
+    ports:
+      - "${WEB_PORT:-5173}:80"
+    depends_on:
+      - api
 
 volumes:
   taskflow-data:
