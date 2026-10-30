@@ -1,0 +1,24 @@
+# Local PostgreSQL for development. Start it with:  docker compose up -d db
+# Host port 5434 is used so it never clashes with another Postgres on 5432.
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: taskflow-db
+    environment:
+      POSTGRES_USER: taskflow
+      POSTGRES_PASSWORD: taskflow
+      POSTGRES_DB: taskflow
+    ports:
+      - "5434:5432"
+    volumes:
+      - taskflow-data:/var/lib/postgresql/data
+      # Files in this folder run automatically on the very first start.
+      - ./db/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U taskflow -d taskflow"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  taskflow-data:

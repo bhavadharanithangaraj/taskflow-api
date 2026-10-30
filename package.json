@@ -6,9 +6,15 @@
   "scripts": {
     "start": "node src/server.js",
     "dev": "node --watch src/server.js",
-    "test": "jest --runInBand"
+    "test": "jest --runInBand",
+    "db:migrate": "node src/db/migrate.js"
   },
-  "keywords": ["express", "postgresql", "jwt", "rest-api"],
+  "keywords": [
+    "express",
+    "postgresql",
+    "jwt",
+    "rest-api"
+  ],
   "author": "Bhavadharani T",
   "license": "MIT",
   "type": "commonjs",
@@ -18,6 +24,7 @@
   "dependencies": {
     "cors": "^2.8.6",
     "dotenv": "^18.0.9",
-    "express": "^5.3.0"
+    "express": "^5.3.0",
+    "pg": "^8.23.1"
   }
 }
