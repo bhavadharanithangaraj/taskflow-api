@@ -16,6 +16,15 @@ app.use(
 );
 app.use(express.json());
 
+// Friendly answer for someone opening the API's base URL in a browser.
+app.get('/', (req, res) => {
+  res.json({
+    name: 'TaskFlow API',
+    health: '/api/health',
+    docs: 'https://github.com/bhavadharanithangaraj/taskflow-api#api-endpoints',
+  });
+});
+
 app.use('/api', routes);
 
 // These two must come last: first "no route matched", then "format any error".
