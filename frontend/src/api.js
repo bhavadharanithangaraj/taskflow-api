@@ -1,7 +1,10 @@
 // The only file that talks to the backend. It adds the JWT header, parses
 // JSON, and turns the API's error format { error: { message, details } }
 // into an ApiError that components can show next to the right field.
-const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+// Accepts the API address with or without "/api" (and with or without a trailing slash).
+const BASE_URL = (import.meta.env.VITE_API_URL || 'http://localhost:3000')
+  .replace(/\/+$/, '')
+  .replace(/(?<!\/api)$/, '/api');
 const TOKEN_KEY = 'taskflow_token';
 
 export class ApiError extends Error {
