@@ -6,6 +6,17 @@ A small **React + Vite** frontend in [`frontend/`](frontend) lets you try every 
 
 ![CI](https://github.com/bhavadharanithangaraj/taskflow-api/actions/workflows/ci.yml/badge.svg)
 
+## Live demo
+
+| | URL |
+|---|---|
+| Frontend (Vercel) | https://taskflow-api-gamma.vercel.app |
+| API (Render) | https://taskflow-api-q8zl.onrender.com/api/health |
+| Database | Neon (serverless PostgreSQL) |
+
+Demo login: `demo@taskflow.dev` / `demo1234`, or register your own account.
+The API is on Render's free plan and sleeps when idle, so the first request can take 30–50 seconds.
+
 ![TaskFlow task board](docs/screenshots/board.png)
 
 <details>
@@ -192,6 +203,12 @@ npm test
 The tests use a separate `taskflow_test` database, which is created automatically, so they never touch your development data.
 They cover health, register (including bcrypt hashing), duplicate email, validation errors, login, the JWT guard, task CRUD, the status filter, pagination, partial updates, and that one user can't access another user's tasks.
 GitHub Actions runs the same suite against a Postgres service on every push.
+
+## Deployment
+
+- **Database: Neon.** A free PostgreSQL project. Its connection string goes into `DATABASE_URL`.
+- **API: Render**, via [`render.yaml`](render.yaml) (Dashboard → New → Blueprint). On every start it runs `npm run db:migrate`, which creates any missing tables, and generates `JWT_SECRET` automatically. Set `DATABASE_URL`, and set `CORS_ORIGIN` to the frontend URL.
+- **Frontend: Vercel.** Root Directory `frontend`, with the environment variable `VITE_API_URL=https://<render-service>.onrender.com/api`.
 
 ## Environment variables
 
